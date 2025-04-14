@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../Compononets/button.dart';
-import 'dialog.dart';
 
 class NumbersPage extends StatelessWidget {
   const NumbersPage({super.key});

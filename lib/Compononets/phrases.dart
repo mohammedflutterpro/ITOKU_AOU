@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../data/phrases_data.dart'; // Import the data file
+import '../data/phrases_data.dart';
 
 class PhrasesPage extends StatelessWidget {
   const PhrasesPage({super.key});
@@ -10,7 +9,7 @@ class PhrasesPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: Text(
+        title: const Text(
           'Phrases',
           style: TextStyle(color: Colors.white),
         ),
@@ -22,9 +21,34 @@ class PhrasesPage extends StatelessWidget {
           return ListTile(
             title: Text(phrase['EnName']),
             subtitle: Text(phrase['japName']),
-            tileColor: phrase['color'], // Set the color
+            tileColor: phrase['color'],
             onTap: () {
-              // Handle tap (e.g., play sound)
+              showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                  title: const Text('Japanese Phrase'),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        phrase['japName'],
+                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        'Pronunciation: ${phrase['EnName']}',
+                        style: const TextStyle(fontSize: 16, color: Colors.black54),
+                      ),
+                    ],
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('Close'),
+                    ),
+                  ],
+                ),
+              );
             },
           );
         },
