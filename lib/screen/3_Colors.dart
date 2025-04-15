@@ -1,25 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:toku/Compononets/Info_widget.dart';
 import 'package:toku/model/inner_data.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+import 'package:translator/translator.dart';
+
+import '../data/colors_data.dart';
 
 class ColorsPage extends StatelessWidget {
-   ColorsPage({super.key});
+  ColorsPage({super.key});
 
-  // List of colors with their English names and assets (for example purposes)
-  final List<Map<String, dynamic>> colorsData = [
-    {"EnName": "Blue", "japName": "Aoi", "color": Colors.blue, "image": "assets/colors/blue.jpg", "sound": "sound1"},
-    {"EnName": "Red", "japName": "Aka", "color": Colors.red, "image": "assets/colors/red.jpg", "sound": "sound2"},
-    {"EnName": "Green", "japName": "Midori", "color": Colors.green, "image": "assets/colors/green.jpg", "sound": "sound3"},
-    {"EnName": "Yellow", "japName": "Kiiro", "color": Colors.yellow, "image": "assets/colors/yellow.jpg", "sound": "sound4"},
-    {"EnName": "Purple", "japName": "Murasaki", "color": Colors.purple, "image": "assets/colors/purple.jpg", "sound": "sound5"},
-    {"EnName": "Orange", "japName": "Orenji", "color": Colors.orange, "image": "assets/colors/orange.jpg", "sound": "sound6"},
-    {"EnName": "Pink", "japName": "Pinku", "color": Colors.pink, "image": "assets/colors/pink.jpg", "sound": "sound7"},
-    {"EnName": "Brown", "japName": "Chairo", "color": Colors.brown, "image": "assets/colors/brown.jpg", "sound": "sound8"},
-    {"EnName": "Grey", "japName": "Gure", "color": Colors.grey, "image": "assets/colors/grey.jpg", "sound": "sound9"},
-    {"EnName": "Black", "japName": "Kuro", "color": Colors.black, "image": "assets/colors/black.jpg", "sound": "sound10"},
-    {"EnName": "White", "japName": "Shiro", "color": Colors.white, "image": "assets/colors/white.jpg", "sound": "sound11"},
-    // Add more colors as needed...
-  ];
+  final FlutterTts flutterTts = FlutterTts();
+  final translator = GoogleTranslator();
+
+  // Function to translate and speak the word
+  void translateAndSpeak(String text) async {
+    try {
+      // Translate the text to Japanese
+      var translation = await translator.translate(text, to: 'ja');
+
+      // Set language to Japanese
+      await flutterTts.setLanguage("ja-JP");
+      await flutterTts.setSpeechRate(0.4); // Adjust speed if necessary
+      await flutterTts.speak(translation.text); // Speak the translated word
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,8 +84,23 @@ class ColorsPage extends StatelessWidget {
                         ],
                       ),
                       actions: [
+                        // Button to play the Japanese pronunciation
+                        TextButton.icon(
+                          onPressed: () {
+                            translateAndSpeak(colorsData[index]["EnName"]!);
+                          },
+                          icon: Icon(Icons.volume_up, color: Colors.deepPurple),
+                          label: Text(
+                            'Japanese',
+                            style: TextStyle(color: Colors.deepPurple),
+                          ),
+                        ),
+                        // Close button
                         TextButton(
-                          child: Text('Close'),
+                          child: Text(
+                            'close',
+                            style: TextStyle(color: Colors.grey[700]),
+                          ),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
@@ -97,13 +118,30 @@ class ColorsPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                 ),
                 alignment: Alignment.center,
-                child: Text(
-                  colorsData[index]["EnName"]!, // Display English color name
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                child: Stack(
+                  children: [
+                    // Text with black stroke
+                    Text(
+                      colorsData[index]["EnName"]!,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        foreground: Paint()
+                          ..style = PaintingStyle.stroke
+                          ..strokeWidth = 1.5
+                          ..color = Colors.black,
+                      ),
+                    ),
+                    // Text with white color
+                    Text(
+                      colorsData[index]["EnName"]!,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             );

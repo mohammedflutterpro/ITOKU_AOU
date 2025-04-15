@@ -1,121 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:toku/Compononets/Info_widget.dart';
-import 'package:toku/model/inner_data.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+import '../data/family_data.dart';
 
 class FamilyMembers extends StatelessWidget {
-  FamilyMembers();
+  FamilyMembers({super.key});
 
-  // List of family members data with English pronunciation (romaji)
-  final List<Map<String, String>> familyMembers = [
-    {
-      "EnName": "Father",
-      "japName": "Otousan",
-      "image": "assets/numbers/one.jpg",
-      "sound": "sound1"
-    },
-    {
-      "EnName": "Mother",
-      "japName": "Okaasan",
-      "image": "assets/numbers/two.jpg",
-      "sound": "sound2"
-    },
-    {
-      "EnName": "Brother",
-      "japName": "Ani",
-      "image": "assets/numbers/three.jpg",
-      "sound": "sound3"
-    },
-    {
-      "EnName": "Sister",
-      "japName": "Imouto",
-      "image": "assets/numbers/four.jpg",
-      "sound": "sound4"
-    },
-    {
-      "EnName": "Grandfather",
-      "japName": "Ojiisan",
-      "image": "assets/numbers/five.jpg",
-      "sound": "sound5"
-    },
-    {
-      "EnName": "Grandmother",
-      "japName": "Okaasan",
-      "image": "assets/numbers/six.jpg",
-      "sound": "sound6"
-    },
-    {
-      "EnName": "Uncle",
-      "japName": "Ojisan",
-      "image": "assets/numbers/seven.jpg",
-      "sound": "sound7"
-    },
-    {
-      "EnName": "Aunt",
-      "japName": "Obasan",
-      "image": "assets/numbers/eight.jpg",
-      "sound": "sound8"
-    },
-    {
-      "EnName": "Cousin (Male)",
-      "japName": "Itoko (Otoko)",
-      "image": "assets/numbers/nine.jpg",
-      "sound": "sound9"
-    },
-    {
-      "EnName": "Cousin (Female)",
-      "japName": "Itoko (Onna)",
-      "image": "assets/numbers/ten.jpg",
-      "sound": "sound10"
-    },
-    {
-      "EnName": "Nephew",
-      "japName": "Otokonoko",
-      "image": "assets/numbers/eleven.jpg",
-      "sound": "sound11"
-    },
-    {
-      "EnName": "Niece",
-      "japName": "Onnanoko",
-      "image": "assets/numbers/twelve.jpg",
-      "sound": "sound12"
-    },
-    {
-      "EnName": "Son",
-      "japName": "Musuko",
-      "image": "assets/numbers/thirteen.jpg",
-      "sound": "sound13"
-    },
-    {
-      "EnName": "Daughter",
-      "japName": "Musume",
-      "image": "assets/numbers/fourteen.jpg",
-      "sound": "sound14"
-    },
-    {
-      "EnName": "Father-in-law",
-      "japName": "Giri no Chichi",
-      "image": "assets/numbers/fifteen.jpg",
-      "sound": "sound15"
-    },
-    {
-      "EnName": "Mother-in-law",
-      "japName": "Giri no Haha",
-      "image": "assets/numbers/sixteen.jpg",
-      "sound": "sound16"
-    },
-    {
-      "EnName": "Husband",
-      "japName": "Otto",
-      "image": "assets/numbers/seventeen.jpg",
-      "sound": "sound17"
-    },
-    {
-      "EnName": "Wife",
-      "japName": "Tsuma",
-      "image": "assets/numbers/eighteen.jpg",
-      "sound": "sound18"
-    },
-  ];
+  final FlutterTts flutterTts = FlutterTts();
+
+  void speakJapanese(String text) async {
+    try {
+      await flutterTts.setLanguage("ja-JP");
+      await flutterTts.setSpeechRate(0.5);
+      await flutterTts.speak(text);
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +32,7 @@ class FamilyMembers extends StatelessWidget {
         padding: const EdgeInsets.all(20.0),
         child: GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3, // Adjust this for how many columns you want
+            crossAxisCount: 3,
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,
           ),
@@ -156,23 +56,37 @@ class FamilyMembers extends StatelessWidget {
                       content: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // Display the image
                           Image.asset(
                             familyMembers[index]["image"]!,
                             height: 100,
                           ),
                           SizedBox(height: 10),
-                          // Display the English pronunciation (romaji)
                           Text(
-                            familyMembers[index]["japName"]!, // Romaji name
+                            familyMembers[index]["japName"]!,
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 20),
                           ),
+                          SizedBox(height: 10),
                         ],
                       ),
                       actions: [
+                        // زرار النطق بالياباني
+                        TextButton.icon(
+                          onPressed: () {
+                            speakJapanese(familyMembers[index]["japName"]!);
+                          },
+                          icon: Icon(Icons.volume_up, color: Colors.green),
+                          label: Text(
+                            'نطق بالياباني',
+                            style: TextStyle(color: Colors.green),
+                          ),
+                        ),
+                        // زر الإغلاق
                         TextButton(
-                          child: Text('Close'),
+                          child: Text(
+                            'إغلاق',
+                            style: TextStyle(color: Colors.grey[700]),
+                          ),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
@@ -183,8 +97,8 @@ class FamilyMembers extends StatelessWidget {
                 );
               },
               child: Container(
-                width: 100, // Fixed width for square shape
-                height: 100, // Fixed height for square shape
+                width: 100,
+                height: 100,
                 decoration: BoxDecoration(
                   color: Colors.green,
                   borderRadius: BorderRadius.circular(15),
