@@ -10,7 +10,7 @@ import 'package:translator/translator.dart';
 import '2_Family_Members.dart';
 import '5_food.dart';
 import 'package:kana_kit/kana_kit.dart';
-import 'package:flutter_tts/flutter_tts.dart';  // إضافة المكتبة
+import 'package:flutter_tts/flutter_tts.dart';
 
 class HomePage_Toku extends StatefulWidget {
   const HomePage_Toku({super.key});
@@ -24,12 +24,20 @@ class _HomePage_TokuState extends State<HomePage_Toku> {
   bool _speechEnabled = false;
   String _wordsspoking = '';
   double _conLevel = 0;
-  FlutterTts _flutterTts = FlutterTts();  // إنشاء كائن FlutterTts
+  FlutterTts _flutterTts = FlutterTts();
+  bool _showBadge = false; // متغير للتحكم في ظهور الإشعار
+  bool _animateBadge = false; // متغير للتحكم في الأنيميشن للبادج
 
   @override
   void initState() {
     super.initState();
     initspeech();
+    // جعل الإشعار يظهر تلقائيًا بعد تحميل الصفحة
+    Future.delayed(Duration(seconds: 1), () {
+      setState(() {
+        _showBadge = true;
+      });
+    });
   }
 
   void initspeech() async {
@@ -41,12 +49,17 @@ class _HomePage_TokuState extends State<HomePage_Toku> {
     await _speechToText.listen(onResult: _onspeechresult);
     setState(() {
       _conLevel = 0;
+      _showBadge = false; // إخفاء الإشعار عند بدء الاستماع
+      _animateBadge = false; // إخفاء الأنيميشن للبادج
     });
   }
 
   void _stopListening() async {
     await _speechToText.stop();
-    setState(() {});
+    setState(() {
+      _showBadge = true; // إظهار البادج بعد التوقف
+      _animateBadge = true; // تفعيل الأنيميشن للبادج
+    });
   }
 
   void _onspeechresult(SpeechRecognitionResult result) async {
@@ -57,8 +70,6 @@ class _HomePage_TokuState extends State<HomePage_Toku> {
 
     if (!_speechToText.isListening && result.finalResult) {
       final translator = GoogleTranslator();
-
-      // ترجمة النص من الإنجليزية إلى اليابانية
       final translation = await translator.translate(
         result.recognizedWords,
         from: 'en',
@@ -99,12 +110,11 @@ class _HomePage_TokuState extends State<HomePage_Toku> {
               onPressed: () => Navigator.of(context).pop(),
               child: Text('OK'),
             ),
-            // زرار "Listen in Japanese"
             TextButton(
               onPressed: () {
-                _flutterTts.setLanguage('ja-JP');  // تعيين اللغة اليابانية
-                _flutterTts.setSpeechRate(0.5);  // تعديل سرعة النطق
-                _flutterTts.speak(translation.text);  // نطق الترجمة اليابانية
+                _flutterTts.setLanguage('ja-JP');
+                _flutterTts.setSpeechRate(0.5);
+                _flutterTts.speak(translation.text);
               },
               child: Text('Listen in Japanese'),
             ),
@@ -119,7 +129,7 @@ class _HomePage_TokuState extends State<HomePage_Toku> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.brown,
-        title: Text(
+        title: const Text(
           'Toku',
           style: TextStyle(color: Colors.white),
         ),
@@ -193,30 +203,64 @@ class _HomePage_TokuState extends State<HomePage_Toku> {
                 _speechToText.isListening
                     ? "listening..."
                     : _speechEnabled
-                    ? "tap the mic"
+                    ? "Talk to me"
                     : 'not available',
                 style: TextStyle(fontSize: 20),
               ),
             ),
           ),
-          Expanded(child: Container(
-            child: Text(_wordsspoking),
-          ),),
+          Expanded(
+            child: Container(
+              child: Text(_wordsspoking,style: TextStyle(color: Colors.blue,fontSize: 30,backgroundColor: Colors.amber),),
+            ),
+          ),
           if (_speechToText.isNotListening && _conLevel > 0)
-            Text(
-              "confidence : ${(_conLevel * 100).toStringAsFixed(1)}%",
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.w300),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 5,right:100 ),
+              child: Text(
+                "Accuracy : ${(_conLevel * 100).toStringAsFixed(1)}%",
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.w500),
+              ),
             ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _speechToText.isListening ? _stopListening : _startlestining,
-        tooltip: "listen",
-        child: Icon(
-          _speechToText.isNotListening ? Icons.mic_off : Icons.mic,
-          color: Colors.white,
-        ),
-        backgroundColor: Colors.black,
+      floatingActionButton: Stack(
+        alignment: Alignment.topRight,
+        clipBehavior: Clip.none,
+        children: [
+          AnimatedSlide(
+            offset: _animateBadge ? Offset.zero : Offset(0, -0.5),
+            duration: Duration(milliseconds: 300),
+            child: AnimatedOpacity(
+              opacity: _showBadge ? 1.0 : 0.0,
+              duration: Duration(milliseconds: 300),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.green,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  "talk to me",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          FloatingActionButton(
+            onPressed: _speechToText.isListening ? _stopListening : _startlestining,
+            tooltip: "listen",
+            child: Icon(
+              _speechToText.isNotListening ? Icons.mic_off : Icons.mic,
+              color: Colors.white,
+            ),
+            backgroundColor: Colors.black,
+          ),
+        ],
       ),
     );
   }

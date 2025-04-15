@@ -41,6 +41,7 @@ dependencies:
   flutter_tts: ^3.5.2
   translator: ^0.1.7
   kana_kit: ^2.1.1
+  provider: ^6.0.0
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 import 'package:toku/model/Quiz_model.dart';
-import 'package:toku/screen/Quiz/ReviewPage.dart';
+import 'package:toku/screen/Quiz/ResultsPage.dart';
 
 class QuizPage extends StatefulWidget {
   @override
@@ -8,67 +9,171 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-  List<Question> questions = [
-    Question(
-      questionText: 'Nihon no shuto wa doko desu ka?', // What is the capital of Japan?
-      type: QuestionType.multipleChoice,
-      options: ['Tokyo', 'Kyoto', 'Osaka', 'Sapporo'], // Tokyo, Kyoto, Osaka, Sapporo
-      correctAnswer: 'Tokyo', // Tokyo
-    ),
-    Question(
-      questionText: 'Kuuhaku wo umete kudasai: Nihon no kokugo wa _ desu.', // Fill in the blank: The national language of Japan is _.
+  List<Question> questions = [];
+  List<String?> userAnswers = List.filled(12, null);
+  final Random random = Random();
+
+  @override
+  void initState() {
+    super.initState();
+    questions = generateQuestions();
+  }
+
+  List<Question> generateQuestions() {
+    final familyData = [
+      {"EnName": "Father", "japName": "Otousan"},
+      {"EnName": "Mother", "japName": "Okaasan"},
+      {"EnName": "Brother", "japName": "Ani"},
+      {"EnName": "Sister", "japName": "Imouto"},
+      {"EnName": "Grandfather", "japName": "Ojiisan"},
+    ];
+    final colorsData = [
+      {"EnName": "Blue", "japName": "Aoi"},
+      {"EnName": "Red", "japName": "Aka"},
+      {"EnName": "Green", "japName": "Midori"},
+      {"EnName": "Yellow", "japName": "Kiiro"},
+      {"EnName": "Purple", "japName": "Murasaki"},
+    ];
+    final phrasesData = [
+      {"EnName": "Good morning", "japName": "Ohayou gozaimasu"},
+      {"EnName": "Thank you", "japName": "Arigatou"},
+      {"EnName": "I'm sorry", "japName": "Gomen nasai"},
+      {"EnName": "You're welcome", "japName": "Douitashimashite"},
+    ];
+    final numbersData = [
+      'ichi', 'ni', 'san', 'yon', 'go', 'roku', 'nana', 'hachi', 'kyuu', 'juu'
+    ];
+    final foodData = [
+      {"EnName": "Rice", "japName": "gohan"},
+      {"EnName": "Sushi", "japName": "sushi"},
+      {"EnName": "Ramen", "japName": "ramen"},
+      {"EnName": "Tempura", "japName": "tenpura"},
+    ];
+
+    List<Question> newQuestions = [];
+
+    List<String> getShuffledOptions(String correct, List<String> others) {
+      int availableOptions = others.length;
+      int optionsToTake = min(3, availableOptions);
+      List<String> options = [correct];
+      if (optionsToTake > 0) {
+        options.addAll(others.sublist(0, optionsToTake));
+      }
+      options.shuffle(random);
+      return options;
+    }
+
+    for (int i = 0; i < 2; i++) {
+      var item = familyData[random.nextInt(familyData.length)];
+      newQuestions.add(Question(
+        questionText: '"${item["japName"]}" wa Eigo de nanto iimasu ka?',
+        type: QuestionType.multipleChoice,
+        options: getShuffledOptions(
+          item["EnName"]!,
+          familyData
+              .where((e) => e["EnName"] != item["EnName"])
+              .map((e) => e["EnName"]!)
+              .toList(),
+        ),
+        correctAnswer: item["EnName"]!,
+      ));
+    }
+    for (int i = 0; i < 2; i++) {
+      var item = familyData[random.nextInt(familyData.length)];
+      newQuestions.add(Question(
+        questionText:
+        'Kuuhaku wo umete kudasai: "${item["EnName"]}" wa Nihongo de _ desu.',
+        type: QuestionType.fillInTheBlank,
+        correctAnswer: item["japName"]!,
+      ));
+    }
+
+    for (int i = 0; i < 2; i++) {
+      var item = colorsData[random.nextInt(colorsData.length)];
+      newQuestions.add(Question(
+        questionText: '"${item["japName"]}" no iro wa nani desu ka?',
+        type: QuestionType.multipleChoice,
+        options: getShuffledOptions(
+          item["EnName"]!,
+          colorsData
+              .where((e) => e["EnName"] != item["EnName"])
+              .map((e) => e["EnName"]!)
+              .toList(),
+        ),
+        correctAnswer: item["EnName"]!,
+      ));
+    }
+    var colorItem = colorsData[random.nextInt(colorsData.length)];
+    newQuestions.add(Question(
+      questionText:
+      'Kuuhaku wo umete kudasai: "${colorItem["EnName"]}" no iro wa _ desu.',
       type: QuestionType.fillInTheBlank,
-      correctAnswer: 'Nihongo', // Japanese
-    ),
+      correctAnswer: colorItem["japName"]!,
+    ));
 
-
-    Question(
-      questionText: 'Aka to ao wo mazeru to nani iro ni narimasu ka?', // What color do you get when you mix red and blue?
+    var phraseItem = phrasesData[random.nextInt(phrasesData.length)];
+    newQuestions.add(Question(
+      questionText: '"${phraseItem["EnName"]}" wa Nihongo de nanto iimasu ka?',
       type: QuestionType.multipleChoice,
-      options: ['Midori', 'Murasaki', 'Orenji', 'Kiiro'], // Green, Purple, Orange, Yellow
-      correctAnswer: 'Murasaki', // Purple
-    ),
-    Question(
-      questionText: 'Kuuhaku wo umete kudasai: Sora no iro wa _ desu.', // Fill in the blank: The color of the sky is _.
+      options: getShuffledOptions(
+        phraseItem["japName"]!,
+        phrasesData
+            .where((e) => e["japName"] != phraseItem["japName"])
+            .map((e) => e["japName"]!)
+            .toList(),
+      ),
+      correctAnswer: phraseItem["japName"]!,
+    ));
+    var phraseItem2 = phrasesData[random.nextInt(phrasesData.length)];
+    newQuestions.add(Question(
+      questionText:
+      'Kuuhaku wo umete kudasai: "${phraseItem2["EnName"]}" wa Nihongo de _ desu.',
       type: QuestionType.fillInTheBlank,
-      correctAnswer: 'ao', // Blue
-    ),
+      correctAnswer: phraseItem2["japName"]!,
+    ));
 
-    // New quizzes about family members (in Romaji)
-    Question(
-      questionText: 'Chichi no ane wa nanto yobimasu ka?', // What do you call your father's sister?
+    var numIndex = random.nextInt(numbersData.length - 1);
+    newQuestions.add(Question(
+      questionText: '"${numbersData[numIndex]}" no tsugi no kazu wa nani desu ka?',
       type: QuestionType.multipleChoice,
-      options: ['Oba', 'Oji', 'Itoko', 'Ane'], // Aunt, Uncle, Cousin, Sister
-      correctAnswer: 'Oba', // Aunt
-    ),
-    Question(
-      questionText: 'Kuuhaku wo umete kudasai: Hahaoya to chichioya wa _ desu.', // Fill in the blank: Your mother and father are your _.
+      options: getShuffledOptions(
+        numbersData[numIndex + 1],
+        numbersData
+            .where((e) => e != numbersData[numIndex + 1])
+            .toList(),
+      ),
+      correctAnswer: numbersData[numIndex + 1],
+    ));
+    newQuestions.add(Question(
+      questionText:
+      'Kuuhaku wo umete kudasai: ${numIndex + 1} wa Nihongo de _ desu.',
       type: QuestionType.fillInTheBlank,
-      correctAnswer: 'ryoushin', // Parents
-    ),
+      correctAnswer: numbersData[numIndex],
+    ));
 
-    // New quizzes about numbers (in Romaji)
-    Question(
-      questionText: 'Juuni tasu juugo wa ikutsu desu ka?', // What is 12 + 15?
+    var foodItem = foodData[random.nextInt(foodData.length)];
+    newQuestions.add(Question(
+      questionText: '"${foodItem["japName"]}" wa Eigo de nanto iimasu ka?',
       type: QuestionType.multipleChoice,
-      options: ['Nijuu', 'Nijuugo', 'Sanjuu', 'Sanjuugo'], // 20, 25, 30, 35
-      correctAnswer: 'Nijuugo', // 25
-    ),
-    Question(
-      questionText: 'Kuuhaku wo umete kudasai: Kyuu no tsugi no kazu wa _ desu.', // Fill in the blank: The number after 9 is _.
-      type: QuestionType.fillInTheBlank,
-      correctAnswer: 'juu', // 10
-    ),
-  ];
+      options: getShuffledOptions(
+        foodItem["EnName"]!,
+        foodData
+            .where((e) => e["EnName"] != foodItem["EnName"])
+            .map((e) => e["EnName"]!)
+            .toList(),
+      ),
+      correctAnswer: foodItem["EnName"]!,
+    ));
 
-  // Initialize userAnswers dynamically based on the number of questions
-  List<String?> userAnswers = List.filled(8, null); // Updated to match the number of questions
+    newQuestions.shuffle(random);
+    return newQuestions;
+  }
 
   void _submitQuiz() {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ReviewPage(
+        builder: (context) => ResultsPage(
           questions: questions,
           userAnswers: userAnswers,
         ),
@@ -76,10 +181,19 @@ class _QuizPageState extends State<QuizPage> {
     );
   }
 
+  void _changeQuestions() {
+    setState(() {
+      questions = generateQuestions();
+      userAnswers = List.filled(12, null);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Quiz')), // Quiz in Romaji
+      appBar: AppBar(
+        title: const Text('Quiz'),
+      ),
       body: ListView.builder(
         itemCount: questions.length,
         itemBuilder: (context, index) {
@@ -94,14 +208,34 @@ class _QuizPageState extends State<QuizPage> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _submitQuiz,
-        child: Icon(Icons.done),
-        tooltip: 'Kuizu wo teishutsu', // Submit Quiz in Romaji
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: _changeQuestions,
+            child: Icon(
+              Icons.refresh,
+              color: Colors.black, // لون الأيقونة من الثيم
+            ),
+            backgroundColor: Colors.amber, // لون الخلفية من الثيم
+            tooltip: 'Atarashii shitsumon',
+            heroTag: 'changeQuestions',
+          ),
+          const SizedBox(height: 10),
+          FloatingActionButton(
+            onPressed: _submitQuiz,
+            child: Icon(
+              Icons.done,
+              color: Colors.black, // لون الأيقونة من الثيم
+            ),
+            backgroundColor: Colors.amber, // لون الخلفية من الثيم
+            tooltip: 'Kuizu wo teishutsu',
+            heroTag: 'submitQuiz',
+          ),
+        ],
       ),
     );
   }
 }
 
 enum QuestionType { multipleChoice, fillInTheBlank }
-
