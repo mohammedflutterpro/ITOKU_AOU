@@ -43,12 +43,12 @@ class NumbersPage extends StatelessWidget {
               },
               icon: Icon(Icons.volume_up, color: Colors.blue),
               label: Text(
-                'نطق بالياباني',
+                'japanese ',
                 style: TextStyle(color: Colors.blue),
               ),
             ),
             TextButton(
-              child: Text('إغلاق'),
+              child: Text('close'),
               onPressed: () {
                 Navigator.of(context).pop();
               },

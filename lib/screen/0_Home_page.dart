@@ -237,7 +237,7 @@ class _HomePage_TokuState extends State<HomePage_Toku> {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.green,
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(

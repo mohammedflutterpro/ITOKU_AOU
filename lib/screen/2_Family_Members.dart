@@ -77,14 +77,14 @@ class FamilyMembers extends StatelessWidget {
                           },
                           icon: Icon(Icons.volume_up, color: Colors.green),
                           label: Text(
-                            'نطق بالياباني',
+                            'japanese',
                             style: TextStyle(color: Colors.green),
                           ),
                         ),
                         // زر الإغلاق
                         TextButton(
                           child: Text(
-                            'إغلاق',
+                            'close',
                             style: TextStyle(color: Colors.grey[700]),
                           ),
                           onPressed: () {
