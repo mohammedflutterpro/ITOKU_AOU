@@ -8,5 +8,5 @@ final List<String> japaneseNumbersRomaji = [
   'roku juu ichi', 'roku juu ni', 'roku juu san', 'roku juu yon', 'roku juu go', 'roku juu roku', 'roku juu nana', 'roku juu hachi', 'roku juu kyuu', 'nana juu',
   'nana juu ichi', 'nana juu ni', 'nana juu san', 'nana juu yon', 'nana juu go', 'nana juu roku', 'nana juu nana', 'nana juu hachi', 'nana juu kyuu', 'hachi juu',
   'hachi juu ichi', 'hachi juu ni', 'hachi juu san', 'hachi juu yon', 'hachi juu go', 'hachi juu roku', 'hachi juu nana', 'hachi juu hachi', 'hachi juu kyuu', 'kyuu juu',
-  'kyuu juu ichi', 'kyuu juu ni', 'kyuu juu san', 'kyuu juu yon', 'kyuu juu go', 'kyuu juu roku', 'kyuu juu nana', 'kyuu juu hachi', 'kyuu juu kyuu', 'hyaku'
+  'kyuu juu ichi', 'kyuu juu ni', 'kyuu juu san', 'kyuu juu yon', 'kyuu juu go', 'kyuu juu roku', 'kyuu juu nana', 'kyuu juu hachi', 'kyuu juu kyuu', 'hyaku',
 ];
