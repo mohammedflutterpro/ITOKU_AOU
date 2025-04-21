@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'ITOKU',
-      home: const HomePage_Toku(),
+      home: const HomePageToku(),
     );
   }
 }

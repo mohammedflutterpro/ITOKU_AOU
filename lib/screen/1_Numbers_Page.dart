@@ -23,7 +23,7 @@ class NumbersPage extends StatelessWidget {
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
             ),
-            itemCount: 100,
+            itemCount: 120,
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () {

@@ -60,4 +60,5 @@ final List<Map<String, dynamic>> phrasesData = [
   {"EnName": "I'm tired", "japName": "Tsukaremashita", "color": Colors.blueGrey.shade300},
   {"EnName": "It's hot", "japName": "Atsui desu", "color": Colors.red.shade600},
   {"EnName": "It's cold", "japName": "Samui desu", "color": Colors.blue.shade600},
+  {"EnName": "hello ", "japName": "Samui desu", "color": Colors.black},
 ];
