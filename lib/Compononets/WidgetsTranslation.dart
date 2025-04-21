@@ -11,44 +11,61 @@ class TranslationDialog {
   }) {
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: Text('Japanese Pronunciation'),
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFFFDFDFD),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text(
+          'Translation Result',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            color: Colors.teal,
+          ),
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("English words:"),
-            Text(
-              originalText,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-            Text("Japanese Translation:"),
-            Text(
-              translatedText,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-            Text("Pronunciation (Romaji):"),
-            Text(
-              romaji,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+            _buildRow("ُEnglish:", originalText),
+            const SizedBox(height: 8),
+            _buildRow("Japanese:", translatedText),
+            const SizedBox(height: 8),
+            _buildRow("Romaji:", romaji),
           ],
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text('OK'),
+            onPressed: () async {
+              await flutterTts.setLanguage("ja-JP");
+              await flutterTts.speak(translatedText);
+            },
+            child: const Text(
+              "🔊 Listen",
+              style: TextStyle(color: Colors.teal),
+            ),
           ),
           TextButton(
-            onPressed: () {
-              flutterTts.setLanguage('ja-JP');
-              flutterTts.setSpeechRate(0.5);
-              flutterTts.speak(translatedText);
-            },
-            child: Text('Listen in Japanese'),
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text(
+              "Close",
+              style: TextStyle(color: Colors.grey),
+            ),
           ),
+        ],
+      ),
+    );
+  }
+
+  static Widget _buildRow(String label, String value) {
+    return RichText(
+      text: TextSpan(
+        style: const TextStyle(fontSize: 16, color: Colors.black87),
+        children: [
+          TextSpan(
+            text: "$label ",
+            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+          ),
+          TextSpan(text: value),
         ],
       ),
     );
