@@ -29,7 +29,7 @@ class HomePageToku extends StatelessWidget {
             DrawerHeader(
               decoration: const BoxDecoration(color: Color(0xFFCC3D3D)),
               child: const Text(
-                'IToku Menu',
+                'IToku 4 Menu',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24,
