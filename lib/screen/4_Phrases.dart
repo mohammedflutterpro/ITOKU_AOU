@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:toku/Compononets/Info_widget.dart';
 import 'package:toku/model/inner_data.dart';
-
 import '../data/phrases_data.dart';
+import '../services/flutter_tts_service.dart';
 
 class Phrases extends StatelessWidget {
-   const Phrases();
-
-
+  const Phrases();
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +18,7 @@ class Phrases extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.only(left:15,right: 15,top: 10  ),
+        padding: const EdgeInsets.only(left:15, right: 15, top: 10),
         child: GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 1, // Number of columns in the grid
@@ -47,24 +45,25 @@ class Phrases extends StatelessWidget {
                       content: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // Display the color
+                          // عرض الاسم بالياباني (رومانجي)
                           SizedBox(height: 10),
-                          // Display the Japanese name (romaji)
                           Text(
-                            phrasesData[index]["japName"]!, // Romaji name
+                            (phrasesData[index]["japName"]!),
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 20),
                           ),
                           SizedBox(height: 10),
-                          // Display sound file path (optional, you can play the sound here if needed)
-                          Text(
-                            "Sound: ${phrasesData[index]["sound"]}",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 12),
-                          ),
                         ],
                       ),
                       actions: [
+                        // زر للاستماع إلى الترجمة بالصوت
+                        TextButton(
+                          child: Text('Listen to Translation'),
+                          onPressed: () {
+                            speakInJapanese(phrasesData[index]["japName"]!); // تشغيل الصوت
+                          },
+                        ),
+                        // زر الإغلاق
                         TextButton(
                           child: Text('Close'),
                           onPressed: () {
@@ -78,13 +77,13 @@ class Phrases extends StatelessWidget {
               },
               child: Container(
                 decoration: BoxDecoration(
-                  color: phrasesData[index]["color"], // Set the color
+                  color: phrasesData[index]["color"],
                   borderRadius: BorderRadius.circular(15),
                 ),
                 alignment: Alignment.center,
                 child: Text(
                   textAlign: TextAlign.center,
-                  phrasesData[index]["EnName"]!, // Display English phrase name
+                  phrasesData[index]["EnName"]!, // عرض النص بالإنجليزي
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,

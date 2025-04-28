@@ -26,18 +26,22 @@ class TranslationDialog {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildRow("ُEnglish:", originalText),
+            _buildRow("English:", originalText),
             const SizedBox(height: 8),
             _buildRow("Japanese:", translatedText),
             const SizedBox(height: 8),
             _buildRow("Romaji:", romaji),
+            const SizedBox(height: 16),
+            const Divider(height: 10, color: Colors.teal),
+            const SizedBox(height: 16),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () async {
               await flutterTts.setLanguage("ja-JP");
-              await flutterTts.speak(translatedText);
+              await flutterTts.setSpeechRate(0.5); // تحديد سرعة النطق
+              await flutterTts.speak(translatedText); // نطق الترجمة
             },
             child: const Text(
               "🔊 Listen",

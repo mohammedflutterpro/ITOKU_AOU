@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';  // إضافة المكتبة
 import 'package:toku/Compononets/Info_widget.dart';
 import 'package:toku/model/inner_data.dart';
-
 import '../data/food_data.dart';
 
-class food extends StatelessWidget {
-  const food();
+class Food extends StatelessWidget {
+   Food();
 
+  final FlutterTts _flutterTts = FlutterTts();  // إضافة المتغير الخاص بالنطق الصوتي
 
+  void _speakInJapanese(String text) async {
+    await _flutterTts.setLanguage("ja-JP");
+    await _flutterTts.setSpeechRate(0.5);
+    await _flutterTts.speak(text);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +26,7 @@ class food extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.only(left:15,right: 15,top: 10  ),
+        padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
         child: GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 1, // Number of columns in the grid
@@ -57,10 +63,11 @@ class food extends StatelessWidget {
                           ),
                           SizedBox(height: 10),
                           // Display sound file path (optional, you can play the sound here if needed)
-                          Text(
-                            "Sound: ${foodData[index]["sound"]}",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 12),
+                          ElevatedButton(
+                            onPressed: () {
+                              _speakInJapanese(foodData[index]["japName"]!); // نطق النص بالياباني
+                            },
+                            child: Text('Speak in Japanese'),
                           ),
                         ],
                       ),
