@@ -14,7 +14,6 @@ class _ReportProblemPageState extends State<ReportProblemPage> {
     String report = _controller.text.trim();
 
     if (report.isNotEmpty) {
-      // هنا ممكن تضيف إرسال لسيرفر أو إيميل مثلاً
       showDialog(
         context: context,
         builder: (_) => AlertDialog(

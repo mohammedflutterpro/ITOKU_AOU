@@ -6,7 +6,6 @@ class TranslationDialog {
     required BuildContext context,
     required String originalText,
     required String translatedText,
-    required String romaji,
     required FlutterTts flutterTts,
   }) {
     showDialog(
@@ -29,8 +28,6 @@ class TranslationDialog {
             _buildRow("English:", originalText),
             const SizedBox(height: 8),
             _buildRow("Japanese:", translatedText),
-            const SizedBox(height: 8),
-            _buildRow("Romaji:", romaji),
             const SizedBox(height: 16),
             const Divider(height: 10, color: Colors.teal),
             const SizedBox(height: 16),

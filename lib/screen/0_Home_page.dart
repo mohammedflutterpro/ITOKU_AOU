@@ -4,14 +4,11 @@ import 'package:toku/screen/3_Colors.dart';
 import 'package:toku/screen/1_Numbers_Page.dart';
 import 'package:toku/screen/4_Phrases.dart';
 import 'package:toku/screen/5_food.dart';
+import 'package:toku/screen/Quiz/Quiz.dart';
+import 'package:toku/screen/6_talk_to_me.dart';
+import 'package:toku/screen/7_new_lessons.dart';
 import '../model/Category_Item.dart';
-import '6_talk_to_me.dart';
-import 'Quiz/Quiz.dart';
-import 'drawer/ContactTutor.dart';
-import 'drawer/HowToUsePage.dart';
-import 'drawer/ReportProblemPage.dart';
-import 'drawer/about_page.dart';
-import 'drawer/suggested_features.dart';
+import 'drawer/custom_drawer.dart';
 
 class HomePageToku extends StatelessWidget {
   const HomePageToku({Key? key}) : super(key: key);
@@ -20,68 +17,49 @@ class HomePageToku extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.brown,
+        backgroundColor: Colors.red,
         title: const Text('IToku', style: TextStyle(color: Colors.white)),
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            Container(
-              color: Colors.red,
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 30.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
-                    'IToku',
-                    style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    'Begin your language journey today and unlock the world of Japanese with fun and easy lessons.',
-                    style: TextStyle(fontSize: 14, color: Colors.white,overflow: TextOverflow.ellipsis ),
-                    maxLines: 3,
-                  ),
-                ],
+        actions: [
+          // Notification button with badge count
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.circle_notifications_rounded,
+                    color: Colors.white,
+                    size: 28),
+                onPressed: () => _showNotifications(context),
               ),
-            ),
-
-
-
-            ListTile(
-              leading: const Text('❓', style: TextStyle(fontSize: 24),),
-              title: const Text('How to Use'),
-              onTap: () => _navigateTo(context, HowToUsePage()),
-            ),
-            ListTile(
-              leading: const Text('ℹ️', style: TextStyle(fontSize: 24),),
-              title: const Text('App Info'),
-              onTap: () => _navigateTo(context, AboutPage()),
-            ),
-            ListTile(
-              leading: const Text('✉️', style: TextStyle(fontSize: 24)), // emoji as icon
-              title: const Text('Contact Tutor'),
-              onTap: () => _navigateTo(context, ContactTutorPage()),
-            ),
-            ListTile(
-              leading: const Text('📘',style: TextStyle(fontSize: 24),),
-              title: const Text('Report Problem'),
-                onTap: () => _navigateTo(context, ReportProblemPage()),
-            ),
-            ListTile(
-              leading: const Text('💡',style: TextStyle(fontSize: 24),),
-              title: const Text('Suggested feature'),
-                onTap: () => _navigateTo(context, SuggestedFeaturesPage()),
-            ),
-            // ListTile(
-            //   leading: const Icon(Icons.info_outline, color: Colors.brown),
-            //   title: const Text('About'),
-            //   onTap: () => _navigateTo(context, AboutPage()),
-            // ),
-          ],
-        ),
+              Positioned(
+                right: 8,
+                top: 8,
+                child: Container(
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    color: Colors.amber,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.red, width: 1),
+                  ),
+                  constraints: const BoxConstraints(
+                    minWidth: 16,
+                    minHeight: 16,
+                  ),
+                  child: const Text(
+                    '3',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
+      drawer: const CustomDrawer(),
       body: Column(
         children: [
           CategoryItem(text: 'Number', emoji: '🔢', color: Colors.amber, ontap: () => _navigateTo(context, NumbersPage())),
@@ -90,6 +68,7 @@ class HomePageToku extends StatelessWidget {
           CategoryItem(text: 'Phrases', emoji: '💬', color: Colors.blue, ontap: () => _navigateTo(context, Phrases())),
           CategoryItem(text: 'Food', emoji: '🍽️', color: Colors.redAccent, ontap: () => _navigateTo(context, Food())),
           CategoryItem(text: 'Quiz', emoji: '📝', color: Colors.orange, ontap: () => _navigateTo(context, QuizPage())),
+          CategoryItem(text: 'New lessons', emoji: '🎯', color: Colors.indigo, ontap: () => _navigateTo(context, NewLessonsPage())),
           CategoryItem(text: 'Talk to me', emoji: '🎤', color: Colors.black, ontap: () => _navigateTo(context, SpeechPage())),
         ],
       ),
@@ -100,5 +79,93 @@ class HomePageToku extends StatelessWidget {
     Navigator.push(context, MaterialPageRoute(builder: (context) => screen));
   }
 
+  void _showNotifications(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+      ),
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(16),
+          height: MediaQuery.of(context).size.height * 0.7,
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Notifications',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+              const Divider(thickness: 1),
+              Expanded(
+                child: ListView(
+                  children: [
+                    _buildNotificationItem(
+                      icon: Icons.celebration,
+                      title: "New lesson available!",
+                      subtitle: "Japanese Phrases 101",
+                      time: "2 hours ago",
+                      color: Colors.blue,
+                    ),
+                    _buildNotificationItem(
+                      icon: Icons.book,
+                      title: "Practice reminder",
+                      subtitle: "You have 5 words to review",
+                      time: "1 day ago",
+                      color: Colors.green,
+                    ),
+                    _buildNotificationItem(
+                      icon: Icons.star,
+                      title: "Achievement!",
+                      subtitle: "You completed 10 lessons this week",
+                      time: "3 days ago",
+                      color: Colors.amber,
+                    ),
+                  ],
+                ),
+              ),
+              ElevatedButton(
+                child: const Text('Mark all as read'),
+                onPressed: () {
+                  // Add logic to update notification status
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
+  Widget _buildNotificationItem({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required String time,
+    required Color color,
+  }) {
+    return ListTile(
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.2),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(icon, color: color),
+      ),
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+      subtitle: Text(subtitle),
+      trailing: Text(time, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+      onTap: () {
+        // You can add navigation to a relevant page
+      },
+    );
+  }
 }

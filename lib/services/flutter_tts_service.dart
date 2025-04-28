@@ -15,3 +15,10 @@ String convertToRomaji(String text) {
   final kanaKit = KanaKit(); // تهيئة الكائن عند الحاجة
   return kanaKit.toRomaji(text);
 }
+FlutterTts flutterTts = FlutterTts();
+
+Future<void> speakInEnglish(String text) async {
+  await flutterTts.setLanguage("en-US");
+  await flutterTts.setPitch(1.0);
+  await flutterTts.speak(text);
+}

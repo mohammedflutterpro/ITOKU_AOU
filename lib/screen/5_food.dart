@@ -1,102 +1,222 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';  // إضافة المكتبة
-import 'package:toku/Compononets/Info_widget.dart';
-import 'package:toku/model/inner_data.dart';
 import '../data/food_data.dart';
+import '../services/flutter_tts_service.dart';
 
 class Food extends StatelessWidget {
-   Food();
+  Food({super.key});
 
-  final FlutterTts _flutterTts = FlutterTts();  // إضافة المتغير الخاص بالنطق الصوتي
+  void _showQuizDialog(BuildContext context) {
+    final randomFood = foodData[Random().nextInt(foodData.length)];
+    final enName = randomFood["EnName"]!;
+    final japName = randomFood["japName"] ?? "Unknown";
 
-  void _speakInJapanese(String text) async {
-    await _flutterTts.setLanguage("ja-JP");
-    await _flutterTts.setSpeechRate(0.5);
-    await _flutterTts.speak(text);
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Center(
+          child: Text(
+            "Food Quiz",
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.deepPurple,
+            ),
+          ),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (randomFood["icon"] != null)
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  Icon(randomFood["icon"], size: 84, color: Colors.black), // Black outline
+                  Icon(randomFood["icon"], size: 80, color: Colors.deepPurple), // Main icon
+                ],
+              ),
+            SizedBox(height: 20),
+            Text(
+              enName,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+            Text("What's this called in Japanese?", style: TextStyle(fontSize: 16)),
+            SizedBox(height: 20),
+            ElevatedButton.icon(
+              icon: Icon(Icons.translate),
+              label: Text("Reveal Answer"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepPurpleAccent,
+                foregroundColor: Colors.white,
+              ),
+              onPressed: () {
+                speakInJapanese(japName);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Answer: $japName")),
+                );
+              },
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            child: Text("Close", style: TextStyle(color: Colors.deepPurple)),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: Text(
-          'Food',
-          style: TextStyle(color: Colors.white),
-        ),
+        elevation: 4,
+        backgroundColor: Colors.deepPurpleAccent,
+        title: Text('Food', style: TextStyle(color: Colors.white)),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.quiz, color: Colors.white),
+            onPressed: () => _showQuizDialog(context),
+          ),
+        ],
       ),
       body: Padding(
-        padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
+        padding: const EdgeInsets.all(16.0),
         child: GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 1, // Number of columns in the grid
-            mainAxisSpacing: 10,
-            mainAxisExtent: 100,
+            crossAxisCount: 2,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            childAspectRatio: 1.2,
           ),
           itemCount: foodData.length,
           itemBuilder: (context, index) {
+            final enName = foodData[index]["EnName"]!;
+            final japName = foodData[index]["japName"]!;
+            final color = foodData[index]["color"] as Color;
+
             return GestureDetector(
               onTap: () {
                 showDialog(
                   context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      title: Center(
-                        child: Text(
-                          foodData[index]["EnName"]!,
-                          style: TextStyle(fontSize: 30),
+                  builder: (context) => AlertDialog(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    title: Center(
+                      child: Text(
+                        enName,
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
                         ),
                       ),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // Display the color
-                          SizedBox(height: 10),
-                          // Display the Japanese name (romaji)
-                          Text(
-                            foodData[index]["japName"]!, // Romaji name
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 20),
+                    ),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (foodData[index]["icon"] != null)
+                          Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Icon(foodData[index]["icon"],
+                                  size: 84, color: Colors.black), // Black outline
+                              Icon(foodData[index]["icon"],
+                                  size: 80, color: Colors.white), // Main icon
+                            ],
                           ),
-                          SizedBox(height: 10),
-                          // Display sound file path (optional, you can play the sound here if needed)
-                          ElevatedButton(
-                            onPressed: () {
-                              _speakInJapanese(foodData[index]["japName"]!); // نطق النص بالياباني
-                            },
-                            child: Text('Speak in Japanese'),
+                        SizedBox(height: 20),
+                        Text(japName,
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w500)),
+                        if (enName.toLowerCase() == "sushi" ||
+                            enName.toLowerCase() == "ramen")
+                          Padding(
+                            padding: EdgeInsets.only(top: 8),
+                            child: Text(
+                              enName.toLowerCase() == "sushi"
+                                  ? "Sushi is a traditional Japanese dish"
+                                  : "Ramen is a popular noodle soup dish",
+                              style: TextStyle(color: Colors.grey, fontSize: 12),
+                            ),
                           ),
-                        ],
-                      ),
-                      actions: [
-                        TextButton(
-                          child: Text('Close'),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
+                        SizedBox(height: 20),
+                        // Button to play the Japanese audio
+                        ElevatedButton.icon(
+                          onPressed: () => speakInJapanese(japName),
+                          icon: Icon(Icons.volume_up),
+                          label: Text(convertToRomaji(japName)),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            foregroundColor: Colors.white,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        // Button to play the English audio
+                        ElevatedButton.icon(
+                          onPressed: () => speakInEnglish(enName),
+                          icon: Icon(Icons.volume_up),
+                          label: Text(enName),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            foregroundColor: Colors.white,
+                          ),
                         ),
                       ],
-                    );
-                  },
+                    ),
+                    actions: [
+                      TextButton(
+                        child: Text('Close',
+                            style: TextStyle(color: Colors.deepPurple)),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ],
+                  ),
                 );
               },
               child: Container(
+                padding: EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: foodData[index]["color"], // Set the color
-                  borderRadius: BorderRadius.circular(15),
+                  color: color,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 5,
+                      offset: Offset(2, 2),
+                    ),
+                  ],
                 ),
                 alignment: Alignment.center,
-                child: Text(
-                  textAlign: TextAlign.center,
-                  foodData[index]["EnName"]!, // Display English phrase name
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (foodData[index]["icon"] != null)
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Icon(foodData[index]["icon"],
+                              size: 44, color: Colors.black), // Black outline
+                          Icon(foodData[index]["icon"],
+                              size: 40, color: Colors.white), // Main icon
+                        ],
+                      ),
+                    SizedBox(height: 8),
+                    Text(
+                      enName,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
               ),
             );

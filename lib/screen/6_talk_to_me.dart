@@ -49,7 +49,7 @@ class _SpeechPageState extends State<SpeechPage> {
     });
 
     if (!_speechToText.isListening && result.finalResult) {
-      _translateAndShowDialog(result.recognizedWords);
+      _textController.text = _spokenWords; // عرض الكلام في TextField
     }
   }
 
@@ -64,13 +64,12 @@ class _SpeechPageState extends State<SpeechPage> {
     final translator = GoogleTranslator();
     final translation = await translator.translate(englishText, from: 'en', to: 'ja');
     final kanaKit = KanaKit();
-    final romaji = kanaKit.toRomaji(translation.text);
+
 
     TranslationDialog.show(
       context: context,
       originalText: englishText,
       translatedText: translation.text,
-      romaji: romaji,
       flutterTts: _flutterTts,
     );
   }

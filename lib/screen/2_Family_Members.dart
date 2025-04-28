@@ -1,187 +1,176 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:toku/Compononets/Info_widget.dart';
-import 'package:toku/model/inner_data.dart';
+import '../data/family_members_data.dart';  // Import your family members data
+import '../services/flutter_tts_service.dart';  // Import your TTS service for audio
+import '../services/translation.dart';  // Import the translation service
 
 class FamilyMembers extends StatelessWidget {
-  FamilyMembers();
+  const FamilyMembers({Key? key}) : super(key: key);
 
-  // List of family members data with English pronunciation (romaji)
-  final List<Map<String, String>> familyMembers = [
-    {
-      "EnName": "Father",
-      "japName": "Otousan",
-      "image": "assets/numbers/one.jpg",
-      "sound": "sound1"
-    },
-    {
-      "EnName": "Mother",
-      "japName": "Okaasan",
-      "image": "assets/numbers/two.jpg",
-      "sound": "sound2"
-    },
-    {
-      "EnName": "Brother",
-      "japName": "Ani",
-      "image": "assets/numbers/three.jpg",
-      "sound": "sound3"
-    },
-    {
-      "EnName": "Sister",
-      "japName": "Imouto",
-      "image": "assets/numbers/four.jpg",
-      "sound": "sound4"
-    },
-    {
-      "EnName": "Grandfather",
-      "japName": "Ojiisan",
-      "image": "assets/numbers/five.jpg",
-      "sound": "sound5"
-    },
-    {
-      "EnName": "Grandmother",
-      "japName": "Okaasan",
-      "image": "assets/numbers/six.jpg",
-      "sound": "sound6"
-    },
-    {
-      "EnName": "Uncle",
-      "japName": "Ojisan",
-      "image": "assets/numbers/seven.jpg",
-      "sound": "sound7"
-    },
-    {
-      "EnName": "Aunt",
-      "japName": "Obasan",
-      "image": "assets/numbers/eight.jpg",
-      "sound": "sound8"
-    },
-    {
-      "EnName": "Cousin (Male)",
-      "japName": "Itoko (Otoko)",
-      "image": "assets/numbers/nine.jpg",
-      "sound": "sound9"
-    },
-    {
-      "EnName": "Cousin (Female)",
-      "japName": "Itoko (Onna)",
-      "image": "assets/numbers/ten.jpg",
-      "sound": "sound10"
-    },
-    {
-      "EnName": "Nephew",
-      "japName": "Otokonoko",
-      "image": "assets/numbers/eleven.jpg",
-      "sound": "sound11"
-    },
-    {
-      "EnName": "Niece",
-      "japName": "Onnanoko",
-      "image": "assets/numbers/twelve.jpg",
-      "sound": "sound12"
-    },
-    {
-      "EnName": "Son",
-      "japName": "Musuko",
-      "image": "assets/numbers/thirteen.jpg",
-      "sound": "sound13"
-    },
-    {
-      "EnName": "Daughter",
-      "japName": "Musume",
-      "image": "assets/numbers/fourteen.jpg",
-      "sound": "sound14"
-    },
-    {
-      "EnName": "Father-in-law",
-      "japName": "Giri no Chichi",
-      "image": "assets/numbers/fifteen.jpg",
-      "sound": "sound15"
-    },
-    {
-      "EnName": "Mother-in-law",
-      "japName": "Giri no Haha",
-      "image": "assets/numbers/sixteen.jpg",
-      "sound": "sound16"
-    },
-    {
-      "EnName": "Husband",
-      "japName": "Otto",
-      "image": "assets/numbers/seventeen.jpg",
-      "sound": "sound17"
-    },
-    {
-      "EnName": "Wife",
-      "japName": "Tsuma",
-      "image": "assets/numbers/eighteen.jpg",
-      "sound": "sound18"
-    },
-  ];
+  // Function to play the Japanese translation via TTS
+  void _playTranslationAudio(String japName) {
+    speakInJapanese(japName); // Assuming 'speakInJapanese' is a method in flutter_tts_service
+  }
+
+  // Function to play the English name via TTS
+  void _playEnglishAudio(String enName) {
+    speakInEnglish(enName); // Assuming 'speakInEnglish' is a method in flutter_tts_service
+  }
+
+  // Function to show a quiz dialog with random family member
+  void _showQuizDialog(BuildContext context) {
+    final randomFamilyMember = familyMembers[Random().nextInt(familyMembers.length)];
+    final enName = randomFamilyMember["EnName"]!;
+    final japName = randomFamilyMember["japName"] ?? "Unknown";
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Center(
+          child: Text(
+            "Family Member Quiz",
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.deepPurple,
+            ),
+          ),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text("Who is this family member?", style: TextStyle(fontSize: 16)),
+            SizedBox(height: 20),
+            Text(
+              enName,  // Displaying the name in Romaji
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton.icon(
+              icon: Icon(Icons.translate),
+              label: Text("Reveal Answer"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepPurpleAccent,
+                foregroundColor: Colors.white,
+              ),
+              onPressed: () {
+                speakInJapanese(japName);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Answer: $japName")),
+                );
+              },
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            child: Text("Close", style: TextStyle(color: Colors.deepPurple)),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Function to show the family member info when tapped
+  void _showFamilyMemberInfo(BuildContext context, int index) async {
+    final familyMember = familyMembers[index];
+    final enName = familyMember["EnName"]!;
+    final japName = familyMember["japName"] ?? await translateToJapanese(enName);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Center(
+            child: Text(
+              enName,
+              style: TextStyle(fontSize: 30),
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Display the Japanese name
+              Text(
+                japName,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 20),
+              ),
+              SizedBox(height: 10),
+              // Button to play the Japanese translation audio
+              ElevatedButton.icon(
+                onPressed: () {
+                  _playTranslationAudio(japName);  // Play the Japanese translation audio
+                },
+                icon: Icon(Icons.volume_up),
+                label: Text('$japName'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+              SizedBox(height: 10),
+              // Button to play the English audio
+              ElevatedButton.icon(
+                onPressed: () {
+                  _playEnglishAudio(enName);  // Play the English audio
+                },
+                icon: Icon(Icons.volume_up),
+                label: Text('$enName'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              child: Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: double.maxFinite,
+        elevation: 0,
         title: Text(
           'Family Members',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.green,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.quiz, color: Colors.white),
+            onPressed: () => _showQuizDialog(context),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3, // Adjust this for how many columns you want
+            crossAxisCount: 3, // Adjust the number of columns
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,
           ),
           itemCount: familyMembers.length,
           itemBuilder: (context, index) {
             return GestureDetector(
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      title: Center(
-                        child: Text(
-                          familyMembers[index]["EnName"]!,
-                          style: TextStyle(fontSize: 30),
-                        ),
-                      ),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // Display the image
-                          Image.asset(
-                            familyMembers[index]["image"]!,
-                            height: 100,
-                          ),
-                          SizedBox(height: 10),
-                          // Display the English pronunciation (romaji)
-                          Text(
-                            familyMembers[index]["japName"]!, // Romaji name
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        ],
-                      ),
-                      actions: [
-                        TextButton(
-                          child: Text('Close'),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
+              onTap: () => _showFamilyMemberInfo(context, index),
               child: Container(
                 width: 100, // Fixed width for square shape
                 height: 100, // Fixed height for square shape
