@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import '../../model/Question_class.dart';  // تأكد أن الملف موجود في هذا المسار
+import '../../model/Question_class.dart';
 import 'QuestionWidget.dart';
 import 'ReviewPage.dart';
-import 'dart:math';  // لإضافة Random لاختيار الأسئلة عشوائيًا
+import 'dart:math';
 
 class QuizPage extends StatefulWidget {
   @override
@@ -14,12 +14,19 @@ class _QuizPageState extends State<QuizPage> {
   FlutterTts _flutterTts = FlutterTts();
   late List<Question> questions;
   List<String?> userAnswers = [];
-  Random _random = Random();  // لإنشاء مولد أرقام عشوائية
+  Random _random = Random();
 
   @override
   void initState() {
     super.initState();
+    _setupTts(); // Configure TTS
     _initializeQuiz();
+  }
+
+  Future<void> _setupTts() async {
+    await _flutterTts.setLanguage("en-US"); // Set English (US) accent
+    await _flutterTts.setPitch(1.0); // Normal pitch
+    await _flutterTts.setSpeechRate(0.5); // Normal speed
   }
 
   void _initializeQuiz() {
@@ -42,7 +49,7 @@ class _QuizPageState extends State<QuizPage> {
         correctAnswer: 'Arigatou',
       ),
       Question(
-        questionText: 'Fill in the blank: "I am a student" in Japanese: ______________',
+        questionText: 'Fill in the blank: "I am a student" in Japanese: ',
         type: QuestionType.fillInTheBlank,
         correctAnswer: 'Watashi wa gakusei desu',
       ),
@@ -65,7 +72,7 @@ class _QuizPageState extends State<QuizPage> {
         correctAnswer: 'Sayonara',
       ),
       Question(
-        questionText: 'Fill in the blank: "My name is __" in Japanese: ______________',
+        questionText: 'Fill in the blank: "My name is   " in Japanese: ',
         type: QuestionType.fillInTheBlank,
         correctAnswer: 'Watashi no namae wa __ desu',
       ),
@@ -88,7 +95,7 @@ class _QuizPageState extends State<QuizPage> {
         correctAnswer: 'Ringo',
       ),
       Question(
-        questionText: 'Fill in the blank: "I am hungry" in Japanese: ______________',
+        questionText: 'Fill in the blank: "I am hungry" in Japanese: ',
         type: QuestionType.fillInTheBlank,
         correctAnswer: 'Onaka ga suita',
       ),
@@ -123,7 +130,7 @@ class _QuizPageState extends State<QuizPage> {
         correctAnswer: 'Uchi',
       ),
       Question(
-        questionText: 'Fill in the blank: "Good morning" in Japanese: ______________',
+        questionText: 'Fill in the blank: "Good morning" in Japanese: ',
         type: QuestionType.fillInTheBlank,
         correctAnswer: 'Ohayou gozaimasu',
       ),
@@ -158,7 +165,7 @@ class _QuizPageState extends State<QuizPage> {
         correctAnswer: 'Gakkou',
       ),
       Question(
-        questionText: 'Fill in the blank: "I am fine" in Japanese: ______________',
+        questionText: 'Fill in the blank: "I am fine" in Japanese: ',
         type: QuestionType.fillInTheBlank,
         correctAnswer: 'Genki desu',
       ),
@@ -187,7 +194,7 @@ class _QuizPageState extends State<QuizPage> {
         correctAnswer: 'Yama',
       ),
       Question(
-        questionText: 'Fill in the blank: "I am sorry" in Japanese: ______________',
+        questionText: 'Fill in the blank: "I am sorry" in Japanese: ',
         type: QuestionType.fillInTheBlank,
         correctAnswer: 'Gomen nasai',
       ),
@@ -199,7 +206,6 @@ class _QuizPageState extends State<QuizPage> {
       ),
     ];
 
-    // اختيار 5 أسئلة عشوائيًا من القائمة
     List<Question> randomQuestions = [];
     while (randomQuestions.length < 5) {
       Question randomQuestion = allQuestions[_random.nextInt(allQuestions.length)];
@@ -232,7 +238,7 @@ class _QuizPageState extends State<QuizPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Japanese Quiz'),
+        title: Text('Quiz'),
         actions: [
           IconButton(
             icon: Icon(Icons.refresh),
@@ -243,13 +249,6 @@ class _QuizPageState extends State<QuizPage> {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              'No time limit, answer at your pace!',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-          ),
           Expanded(
             child: ListView.builder(
               itemCount: questions.length,

@@ -7,17 +7,15 @@ import '../services/translation.dart';  // Import the translation service
 class FamilyMembers extends StatelessWidget {
   const FamilyMembers({Key? key}) : super(key: key);
 
-  // Function to play the Japanese translation via TTS
   void _playTranslationAudio(String japName) {
-    speakInJapanese(japName); // Assuming 'speakInJapanese' is a method in flutter_tts_service
+    speakInJapanese(japName);
   }
 
-  // Function to play the English name via TTS
   void _playEnglishAudio(String enName) {
-    speakInEnglish(enName); // Assuming 'speakInEnglish' is a method in flutter_tts_service
+    speakInEnglish(enName);
   }
 
-  // Function to show a quiz dialog with random family member
+
   void _showQuizDialog(BuildContext context) {
     final randomFamilyMember = familyMembers[Random().nextInt(familyMembers.length)];
     final enName = randomFamilyMember["EnName"]!;
@@ -33,7 +31,7 @@ class FamilyMembers extends StatelessWidget {
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
-              color: Colors.deepPurple,
+              color: Colors.green,
             ),
           ),
         ),
@@ -51,7 +49,7 @@ class FamilyMembers extends StatelessWidget {
               icon: Icon(Icons.translate),
               label: Text("Reveal Answer"),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurpleAccent,
+                backgroundColor: Colors.green,
                 foregroundColor: Colors.white,
               ),
               onPressed: () {
@@ -65,7 +63,7 @@ class FamilyMembers extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            child: Text("Close", style: TextStyle(color: Colors.deepPurple)),
+            child: Text("Close", style: TextStyle(color: Colors.green)),
             onPressed: () => Navigator.pop(context),
           ),
         ],

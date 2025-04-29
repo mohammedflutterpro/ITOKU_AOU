@@ -21,7 +21,7 @@ class Food extends StatelessWidget {
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
-              color: Colors.deepPurple,
+              color: Colors.redAccent,
             ),
           ),
         ),
@@ -33,7 +33,7 @@ class Food extends StatelessWidget {
                 alignment: Alignment.center,
                 children: [
                   Icon(randomFood["icon"], size: 84, color: Colors.black), // Black outline
-                  Icon(randomFood["icon"], size: 80, color: Colors.deepPurple), // Main icon
+                  Icon(randomFood["icon"], size: 80, color: Colors.redAccent), // Main icon
                 ],
               ),
             SizedBox(height: 20),
@@ -48,7 +48,7 @@ class Food extends StatelessWidget {
               icon: Icon(Icons.translate),
               label: Text("Reveal Answer"),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurpleAccent,
+                backgroundColor: Colors.redAccent,
                 foregroundColor: Colors.white,
               ),
               onPressed: () {
@@ -62,7 +62,7 @@ class Food extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            child: Text("Close", style: TextStyle(color: Colors.deepPurple)),
+            child: Text("Close", style: TextStyle(color: Colors.redAccent)),
             onPressed: () => Navigator.pop(context),
           ),
         ],
@@ -76,7 +76,7 @@ class Food extends StatelessWidget {
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         elevation: 4,
-        backgroundColor: Colors.deepPurpleAccent,
+        backgroundColor: Colors.redAccent,
         title: Text('Food', style: TextStyle(color: Colors.white)),
         actions: [
           IconButton(

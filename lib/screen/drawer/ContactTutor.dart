@@ -10,14 +10,24 @@ class ContactTutorPage extends StatefulWidget {
 class _ContactTutorPageState extends State<ContactTutorPage> {
   final _formKey = GlobalKey<FormState>();
   final _messageController = TextEditingController();
+  String? _selectedEmail; // Tracks the selected email
 
   void _sendMessage() {
     if (_formKey.currentState!.validate()) {
+      if (_selectedEmail == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please select a tutor email!')),
+        );
+        return;
+      }
       // Fake send
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Message sent to tutor!')),
+        SnackBar(content: Text('Message sent to $_selectedEmail!')),
       );
       _messageController.clear();
+      setState(() {
+        _selectedEmail = null; // Reset selection after sending
+      });
     }
   }
 
@@ -41,41 +51,49 @@ class _ContactTutorPageState extends State<ContactTutorPage> {
             ),
             const SizedBox(height: 10),
             const Text(
-              'Our tutors are here to help you! Choose a contact method or send us a message directly below.',
+              'Our tutors are here to help you! Choose a tutor by selecting their email and send a message directly below.',
               style: TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 20),
             const Divider(),
-            const ListTile(
-              leading: Icon(Icons.email, color: Colors.teal),
-              title: Text('tutor.mina@itoku.com'),
-              subtitle: Text('Mina - Japanese Basics'),
+            ListTile(
+              leading: const Icon(Icons.email, color: Colors.teal),
+              title: const Text('tutor.mina@itoku.com'),
+              subtitle: const Text('Mina - Japanese Basics'),
+              trailing: Checkbox(
+                value: _selectedEmail == 'tutor.mina@itoku.com',
+                onChanged: (bool? value) {
+                  setState(() {
+                    _selectedEmail = value == true ? 'tutor.mina@itoku.com' : null;
+                  });
+                },
+              ),
             ),
-            const ListTile(
-              leading: Icon(Icons.email, color: Colors.teal),
-              title: Text('tutor.john@itoku.com'),
-              subtitle: Text('john - Conversation Practice'),
+            ListTile(
+              leading: const Icon(Icons.email, color: Colors.teal),
+              title: const Text('tutor.john@itoku.com'),
+              subtitle: const Text('John - Conversation Practice'),
+              trailing: Checkbox(
+                value: _selectedEmail == 'tutor.john@itoku.com',
+                onChanged: (bool? value) {
+                  setState(() {
+                    _selectedEmail = value == true ? 'tutor.john@itoku.com' : null;
+                  });
+                },
+              ),
             ),
-            const ListTile(
-              leading: Icon(Icons.email, color: Colors.teal),
-              title: Text('tutor.Sara@itoku.com'),
-              subtitle: Text('Sara - Grammar and Writing'),
-            ),
-            const Divider(),
-            const ListTile(
-              leading: Icon(Icons.phone, color: Colors.teal),
-              title: Text('+966 534 567 8901'),
-              subtitle: Text('Mina'),
-            ),
-            const ListTile(
-              leading: Icon(Icons.phone, color: Colors.teal),
-              title: Text('+966 534 567 8902'),
-              subtitle: Text('john'),
-            ),
-            const ListTile(
-              leading: Icon(Icons.phone, color: Colors.teal),
-              title: Text('+966 534 567 8903'),
-              subtitle: Text('Sara'),
+            ListTile(
+              leading: const Icon(Icons.email, color: Colors.teal),
+              title: const Text('tutor.sara@itoku.com'),
+              subtitle: const Text('Sara - Grammar and Writing'),
+              trailing: Checkbox(
+                value: _selectedEmail == 'tutor.sara@itoku.com',
+                onChanged: (bool? value) {
+                  setState(() {
+                    _selectedEmail = value == true ? 'tutor.sara@itoku.com' : null;
+                  });
+                },
+              ),
             ),
             const Divider(),
             const SizedBox(height: 20),
@@ -89,14 +107,20 @@ class _ContactTutorPageState extends State<ContactTutorPage> {
               child: TextFormField(
                 controller: _messageController,
                 maxLines: 4,
+                enabled: _selectedEmail != null, // Disable if no email selected
                 decoration: InputDecoration(
-                  hintText: 'Write your message here...',
+                  hintText: _selectedEmail == null
+                      ? 'Select a tutor email to enable typing...'
+                      : 'Write your message here...',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Colors.black)
+                    borderSide: const BorderSide(color: Colors.black),
                   ),
                   filled: true,
-                  fillColor: Colors.grey[100],
+                  fillColor: _selectedEmail == null ? Colors.grey[300] : Colors.grey[100],
+                  hintStyle: TextStyle(
+                    color: _selectedEmail == null ? Colors.grey[600] : Colors.grey,
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
@@ -110,8 +134,8 @@ class _ContactTutorPageState extends State<ContactTutorPage> {
             Center(
               child: ElevatedButton.icon(
                 onPressed: _sendMessage,
-                icon: const Icon(Icons.send,color: Colors.white,),
-                label: const Text('Send Message',style: TextStyle(color: Colors.white),),
+                icon: const Icon(Icons.send, color: Colors.white),
+                label: const Text('Send Message', style: TextStyle(color: Colors.white)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.teal,
                   padding: const EdgeInsets.symmetric(

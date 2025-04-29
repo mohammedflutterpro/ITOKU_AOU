@@ -35,10 +35,10 @@ class Phrases extends StatelessWidget {
             SizedBox(height: 20),
             ElevatedButton.icon(
               onPressed: () => speakInJapanese(japPhrase),
-              icon: Icon(Icons.volume_up),
-              label: Text(romaji),
+              icon: Icon(Icons.translate),
+              label: Text('Reveal Answer'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green, // Updated to green for consistency
+                backgroundColor: Colors.blue, // Updated to green for consistency
                 foregroundColor: Colors.white,
               ),
             ),
@@ -102,16 +102,6 @@ class Phrases extends StatelessWidget {
                     content: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          japText,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 22,
-                            color: Colors.blue[800],
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
-                        SizedBox(height: 15),
                         if (phrasesData[index]["literalTranslation"] != null)
                           Padding(
                             padding: EdgeInsets.only(bottom: 10),
@@ -147,7 +137,7 @@ class Phrases extends StatelessWidget {
                           icon: Icon(Icons.volume_up, size: 18),
                           label: Text(romaji),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green, // Updated to green for consistency
+                            backgroundColor: Colors.blue, // Updated to green for consistency
                             foregroundColor: Colors.white,
                           ),
                         ),
@@ -158,7 +148,7 @@ class Phrases extends StatelessWidget {
                           icon: Icon(Icons.volume_up, size: 18),
                           label: Text(enText),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
+                            backgroundColor: Colors.blue,
                             foregroundColor: Colors.white,
                           ),
                         ),

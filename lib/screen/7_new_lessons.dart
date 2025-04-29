@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'lessons/Lesson_1_Page.dart';
+import 'lessons/Lesson_2_Page.dart';
+import 'lessons/Lesson_3_Page.dart';
+import 'lessons/game.dart';
+
 
 class NewLessonsPage extends StatelessWidget {
   const NewLessonsPage({Key? key}) : super(key: key);
@@ -13,9 +18,7 @@ class NewLessonsPage extends StatelessWidget {
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        actions: [
-
-        ],
+        actions: [],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -32,17 +35,37 @@ class NewLessonsPage extends StatelessWidget {
               style: TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 32),
-            _buildLessonCard('Lesson 1: Japanese Basics', 'Introduction to Hiragana and Katakana'),
-            _buildLessonCard('Lesson 2: Common Phrases', 'Learn daily conversation phrases'),
-            _buildLessonCard('Lesson 3: Numbers and Counting', 'Master the Japanese number system'),
+            _buildLessonCard(
+              context,
+              'Lesson 1: Japanese Basics',
+              'Introduction to Hiragana and Katakana',
+              const Lesson1Page(),
+            ),
+            _buildLessonCard(
+              context,
+              'Lesson 2: Common Phrases',
+              'Learn daily conversation phrases',
+              const Lesson2Page(),
+            ),
+            _buildLessonCard(
+              context,
+              'Lesson 3: Numbers and Counting',
+              'Master the Japanese number system',
+              const Lesson3Page(),
+            ),
+            _buildLessonCard(
+              context,
+              'Hiragana Matching Game',
+              'Match Hiragana and Katakana with their romaji',
+              const QuizGamePage(),
+            ),
           ],
         ),
       ),
     );
   }
 
-  // بناء عنصر درس فردي
-  Widget _buildLessonCard(String title, String description) {
+  Widget _buildLessonCard(BuildContext context, String title, String description, Widget page) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 5,
@@ -58,11 +81,12 @@ class NewLessonsPage extends StatelessWidget {
         ),
         trailing: const Icon(Icons.arrow_forward),
         onTap: () {
-          // يمكنك إضافة إجراءات هنا عند الضغط على الدرس
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => page),
+          );
         },
       ),
     );
   }
-
-
 }

@@ -22,31 +22,45 @@ class NumbersPage extends StatelessWidget {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Quiz Time!", style: TextStyle(color: Colors.blue)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text("How do you say '$randomNumber' in Japanese?", style: TextStyle(fontSize: 16)),
-            SizedBox(height: 20),
-            ElevatedButton(
-              child: Text("Reveal Answer"),
-              onPressed: () {
-                _speakNumber(romaji, isTranslation: true);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Answer: $romaji")),
-                );
-              },
+      builder: (context) =>
+          AlertDialog(
+            title: Text("Quiz Time!", style: TextStyle(color: Colors.black)),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text("How do you say '$randomNumber' in Japanese?",
+                    style: TextStyle(fontSize: 16)),
+                SizedBox(height: 20),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    _speakNumber(romaji, isTranslation: true);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Answer: $romaji")),
+                    );
+                  },
+                  icon: const Icon(Icons.translate, color: Colors.black),
+                  label: const Text(
+                    "Reveal Answer",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.amber,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            child: Text("Close"),
-            onPressed: () => Navigator.pop(context),
+            actions: [
+              TextButton(
+                child: Text("Close", style: TextStyle(color: Colors.black),),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -54,11 +68,11 @@ class NumbersPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Numbers', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.lightBlueAccent,
+        title: Text('Numbers', style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.amber,
         actions: [
           IconButton(
-            icon: Icon(Icons.quiz, color: Colors.white),
+            icon: Icon(Icons.quiz, color: Colors.black),
             onPressed: () => _showQuizDialog(context),
           ),
         ],
@@ -78,74 +92,79 @@ class NumbersPage extends StatelessWidget {
               onTap: () {
                 showDialog(
                   context: context,
-                  builder: (context) => AlertDialog(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    title: Center(
-                      child: Text('$number', style: TextStyle(fontSize: 50)),
-                    ),
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          romajiNumbers(number),
-                          style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic),
+                  builder: (context) =>
+                      AlertDialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                        if (number == 4 || number == 7 || number == 9)
-                          Padding(
-                            padding: EdgeInsets.only(top: 10),
-                            child: Text(
-                              number == 4
-                                  ? "Note: 'Shi' (4) sounds like 'death'"
-                                  : number == 7
-                                  ? "Note: Can also be 'shichi'"
-                                  : "Note: 'Ku' (9) sounds like 'suffering'",
-                              style: TextStyle(color: Colors.grey, fontSize: 12),
+                        title: Center(
+                          child: Text(
+                              '$number', style: TextStyle(fontSize: 50)),
+                        ),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              romajiNumbers(number),
+                              style: TextStyle(
+                                  fontSize: 18, fontStyle: FontStyle.italic),
+                            ),
+                            if (number == 4 || number == 7 || number == 9)
+                              Padding(
+                                padding: EdgeInsets.only(top: 10),
+                                child: Text(
+                                  number == 4
+                                      ? "Note: 'Shi' (4) sounds like 'death'"
+                                      : number == 7
+                                      ? "Note: Can also be 'shichi'"
+                                      : "Note: 'Ku' (9) sounds like 'suffering'",
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 12),
+                                ),
+                              ),
+                            SizedBox(height: 10),
+                            // Button to play the English audio
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                _speakNumber('$number'); // Play English audio
+                              },
+                              icon: Icon(Icons.volume_up),
+                              label: Text('$number'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.amber,
+                                foregroundColor: Colors.black,
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            // Button to play the Japanese audio
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                _speakNumber(romajiNumbers(number),
+                                    isTranslation: true); // Play Japanese audio
+                              },
+                              icon: Icon(Icons.volume_up),
+                              label: Text(romajiNumbers(number)),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.amber,
+                                foregroundColor: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                        actions: [
+                          Center(
+                            child: TextButton(
+                              child: Text('Close',),
+                              onPressed: () => Navigator.pop(context),
                             ),
                           ),
-                        SizedBox(height: 10),
-                        // Button to play the English audio
-                        ElevatedButton.icon(
-                          onPressed: () {
-                            _speakNumber('$number'); // Play English audio
-                          },
-                          icon: Icon(Icons.volume_up),
-                          label: Text('$number'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            foregroundColor: Colors.white,
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        // Button to play the Japanese audio
-                        ElevatedButton.icon(
-                          onPressed: () {
-                            _speakNumber(romajiNumbers(number), isTranslation: true); // Play Japanese audio
-                          },
-                          icon: Icon(Icons.volume_up),
-                          label: Text(romajiNumbers(number)),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            foregroundColor: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                    actions: [
-                      Center(
-                        child: TextButton(
-                          child: Text('Close'),
-                          onPressed: () => Navigator.pop(context),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
                 );
               },
               child: Container(
                 decoration: BoxDecoration(
-                  color: _getNumberColor(number),
+                  color: Colors.amber,
                   borderRadius: BorderRadius.circular(15),
                 ),
                 alignment: Alignment.center,
@@ -154,7 +173,7 @@ class NumbersPage extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                 ),
               ),
@@ -163,14 +182,5 @@ class NumbersPage extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  // Color coding by number groups
-  Color _getNumberColor(int number) {
-    if (number <= 10) return Colors.blue;
-    if (number <= 20) return Colors.green;
-    if (number <= 30) return Colors.orange;
-    if (number <= 40) return Colors.purple;
-    return Colors.red;
   }
 }
