@@ -20,14 +20,12 @@ class HomePageToku extends StatelessWidget {
         backgroundColor: Colors.red,
         title: const Text('IToku', style: TextStyle(color: Colors.white)),
         actions: [
-          // Notification button with badge count
           Stack(
             alignment: Alignment.center,
             children: [
               IconButton(
                 icon: const Icon(Icons.circle_notifications_rounded,
-                    color: Colors.white,
-                    size: 28),
+                    color: Colors.white, size: 28),
                 onPressed: () => _showNotifications(context),
               ),
               Positioned(
@@ -116,7 +114,7 @@ class HomePageToku extends StatelessWidget {
                     _buildNotificationItem(
                       icon: Icons.book,
                       title: "Practice reminder",
-                      subtitle: "You have 5 words to review",
+                      subtitle: "There is a new questions added",
                       time: "1 day ago",
                       color: Colors.green,
                     ),
@@ -133,7 +131,6 @@ class HomePageToku extends StatelessWidget {
               ElevatedButton(
                 child: const Text('Mark all as read'),
                 onPressed: () {
-                  // Add logic to update notification status
                   Navigator.pop(context);
                 },
               ),
@@ -151,21 +148,27 @@ class HomePageToku extends StatelessWidget {
     required String time,
     required Color color,
   }) {
-    return ListTile(
-      leading: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.2),
-          shape: BoxShape.circle,
+    return Builder(
+      builder: (context) => ListTile(
+        leading: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.2),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, color: color),
         ),
-        child: Icon(icon, color: color),
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+        subtitle: Text(subtitle),
+        trailing: Text(time, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+        onTap: () {
+          if (title.toLowerCase().contains('lesson')) {
+            _navigateTo(context, NewLessonsPage());
+          } else if (title.toLowerCase().contains('practice')) {
+            _navigateTo(context, QuizPage());
+          }
+        },
       ),
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-      subtitle: Text(subtitle),
-      trailing: Text(time, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-      onTap: () {
-        // You can add navigation to a relevant page
-      },
     );
   }
 }

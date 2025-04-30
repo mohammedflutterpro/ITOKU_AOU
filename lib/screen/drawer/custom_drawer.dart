@@ -55,7 +55,7 @@ class CustomDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Text('💡', style: TextStyle(fontSize: 24)),
-            title: const Text('Suggested feature'),
+            title: const Text('Suggest a feature'),
             onTap: () => _navigateTo(context, SuggestedFeaturesPage()),
           ),
         ],
