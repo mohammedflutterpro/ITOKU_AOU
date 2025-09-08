@@ -1,4 +1,3 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 class ItemModel {
@@ -13,10 +12,5 @@ class ItemModel {
     required this.japName,
     // required this.sound
 });
-
-  // playsound() {
-  //   final player = AudioPlayer();
-  //   player.play(AssetSource(sound!));
-  // }
 }
 

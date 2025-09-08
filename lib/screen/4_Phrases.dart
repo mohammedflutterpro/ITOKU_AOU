@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:toku/Compononets/Info_widget.dart';
-import 'package:toku/model/inner_data.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:translator/translator.dart';
 
@@ -23,7 +21,7 @@ class Phrases extends StatelessWidget {
       await flutterTts.setSpeechRate(0.4); // Adjust speed if necessary
       await flutterTts.speak(translation.text); // Speak the translated phrase
     } catch (e) {
-      print("Error: $e");
+      print("Error: try again ");
     }
   }
 
